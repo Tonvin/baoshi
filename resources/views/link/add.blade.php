@@ -33,6 +33,10 @@ button.add {width:150px;height:35px;letter-spacing:.5em;font-weight:bold;}
     </head>
     <body class="antialiased">
         <div class='container'>
+
+                <!-- Validation Errors -->
+                <x-auth-validation-errors class="mb-4" :errors="$errors" />
+
                 <form method=post action={{url('/link/insert')}}>
                     @csrf
                     <p><input type=text name=url placeholder='URL' value='asdfasdf' /></p>
@@ -40,6 +44,7 @@ button.add {width:150px;height:35px;letter-spacing:.5em;font-weight:bold;}
                     <p><input type=text name=tags placeholder='tags,以 | 分割' /></p>
                     <p style=''><button class=add>添加书签</button></p>
                 </form>
+
         </div>
     </body>
 </html>

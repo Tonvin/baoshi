@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Link;
+use Yajra\Datatables\Facades\Datatables;
 
 
 class LinkController extends Controller
 {
     public function add(Request $request)
     {
-        return view('add');
+        return view('link/add');
     }
 
     public function insert(Request $request)
@@ -23,6 +24,19 @@ class LinkController extends Controller
         $link->url = $request->url;
         $link->save();
         //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
-        return redirect()->route('add');
+        return redirect()->route('list');
+    }
+
+
+    public function select(Request $request)
+    {
+        $link = new Link();
+        $links = $link::all();
+        return response()->json($links);
+    }
+
+    public function list(Request $request)
+    {
+        return view('link/list');
     }
 }
