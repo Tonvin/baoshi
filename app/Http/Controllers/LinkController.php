@@ -22,6 +22,7 @@ class LinkController extends Controller
 
         $link = new Link();
         $link->url = $request->url;
+        $link->title = $request->title;
         $link->save();
         //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
         return redirect()->route('list');
