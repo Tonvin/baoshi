@@ -23,6 +23,7 @@ class LinkController extends Controller
         $link = new Link();
         $link->url = $request->url;
         $link->title = $request->title;
+        $link->tags = $request->tags;
         $link->save();
         //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
         return redirect()->route('list');
@@ -34,6 +35,13 @@ class LinkController extends Controller
         $link = new Link();
         $links = $link::all();
         return response()->json($links);
+    }
+
+    public function del(Request $request)
+    {
+        $link = Link::find(intval($request->id));
+        $link->delete();
+        return redirect()->route('list');
     }
 
     public function list(Request $request)

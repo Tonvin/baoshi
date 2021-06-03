@@ -39,7 +39,7 @@ button.add {width:150px;height:35px;letter-spacing:.5em;font-weight:bold;}
 
                 <form method=post action={{url('/link/insert')}}>
                     @csrf
-                    <p><input type=text name=url placeholder='URL' value='asdfasdf' /></p>
+                    <p><input type=text name=url placeholder='URL' value='' /></p>
                     <p><input type=text name=title placeholder='标题' /></p>
                     <p><input type=text name=tags placeholder='tags,以 | 分割' /></p>
                     <p style=''><button class=add>添加书签</button></p>
