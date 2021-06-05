@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Link;
+use Illuminate\Support\Facades\DB;
 
 
 class LinkController extends Controller
@@ -29,7 +30,7 @@ class LinkController extends Controller
         $link = Link::find($request->id);
         $link->url = $request->url;
         $link->title = $request->title;
-        $link->tags = self::format_tags($request->tags);
+        $link->tags = self::format_tags((string)$request->tags);
         $link->save();
         //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
         return redirect('/link/list')->with('status', '修改成功');
@@ -47,14 +48,14 @@ class LinkController extends Controller
      * @return string or null
      */
 
-    private function format_tags(string $tags) : ?string {
+    private function format_tags(string $tags) : string {
         if ( $tags ) {                  
             $_tags = explode('|', $tags);
             $_tags = array_map(function($tag){return trim($tag);}, $_tags);
             $_tags = array_filter($_tags);
             return '|'.implode('|', $_tags).'|';                                                                                  
         }
-        return null;
+        return '';
     }
 
     public function insert(Request $request)
@@ -75,8 +76,10 @@ class LinkController extends Controller
 
     public function select(Request $request)
     {
-        $link = new Link();
-        $links = $link::all();
+        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')->get();
+        foreach ($links ?? [] as &$link) {
+            $link->tags = trim($link->tags, '|');
+        }
         return response()->json($links);
     }
 

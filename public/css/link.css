@@ -1,0 +1,25 @@
+ @media screen and (min-device-width:700px){
+ }
+
+@media screen and (max-device-width:700px){
+ }
+
+html{ font-size:32px;}
+body{width:100%;max-width:700px;margin:auto;}
+
+header{
+    width:100%;
+    display:flex;
+    justify-content:center;
+}
+
+header h1{ 
+    margin:.1em;
+    letter-spacing:.1em;
+}
+
+header h1 a { 
+    text-decoration:none;
+    color:#092b00;
+    font-size:1.5rem;
+}

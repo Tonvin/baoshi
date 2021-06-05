@@ -4,40 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">  
-
-        <title>修改书签</title>
-
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-
-<style>
-body {
-    font-family: 'Nunito', sans-serif;
-}
-
-@media screen and (max-device-width:393px){
-    .body{width:95%;}
-}
-
-@media screen and (min-device-width:700px){
-    .body{width:700px;margin:auto;}
-}
-
-p input{border:1px solid gray;width:100%;height:35px;}
-
-button.add {width:150px;height:35px;letter-spacing:.5em;font-weight:bold;}
-
-.logo { margin:1em 0 }
-
-</style>
+        <link href="{{ URL::asset('css/link.css')}}" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <title>{{__('edit_link')}}</title>
     </head>
-    <body class="antialiased body">
 
-<header>
-<div class=logo><h1>宝石书签</h1></div>
-</header>
-
+<body>
+@include('link.header')
 <div id="app">
     <v-app id="inspire">
         <!-- Validation Errors -->
@@ -52,8 +27,6 @@ button.add {width:150px;height:35px;letter-spacing:.5em;font-weight:bold;}
         </form>
     </v-app>
 </div>
-
-
 <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <script>
@@ -64,6 +37,5 @@ new Vue({
 })
 </script>
 
-    </body>
+</body>
 </html>
-
