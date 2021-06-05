@@ -8,6 +8,10 @@ Route::post('/link/insert', [App\Http\Controllers\LinkController::class, 'insert
 
 Route::get('/link/list', [App\Http\Controllers\LinkController::class, 'list'])->name('list');
 
-Route::get('/link/del/{id}', [App\Http\Controllers\LinkController::class, 'del'])->middleware(['auth'])->name('del');
+Route::get('/link/del/{id}', [App\Http\Controllers\LinkController::class, 'del'])->middleware(['auth'])->name('del')->where('id', '[0-9]+');
+
+Route::get('/link/edit/{id}', [App\Http\Controllers\LinkController::class, 'edit'])->middleware(['auth'])->name('edit')->where('id', '[0-9]+');
 
 Route::post('/link/select', [App\Http\Controllers\LinkController::class, 'select'])->name('select');
+
+Route::post('/link/update', [App\Http\Controllers\LinkController::class, 'update'])->name('update');
