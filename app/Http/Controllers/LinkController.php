@@ -28,7 +28,7 @@ class LinkController extends Controller
         ]);
 
         $link = Link::find($request->id);
-        $link->url = $request->url;
+        $link->url = trim($request->url);
         $link->title = $request->title;
         $link->tags = self::format_tags((string)$request->tags);
         $link->save();
@@ -65,7 +65,7 @@ class LinkController extends Controller
         ]);
 
         $link = new Link();
-        $link->url = $request->url;
+        $link->url = trim($request->url);
         $link->title = $request->title;
         $link->tags = self::format_tags($request->tags);
         $link->save();
@@ -79,6 +79,7 @@ class LinkController extends Controller
         $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')->get();
         foreach ($links ?? [] as &$link) {
             $link->tags = trim($link->tags, '|');
+            $link->url  = rtrim($link->url, '/');
         }
         return response()->json($links);
     }

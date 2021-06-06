@@ -4,11 +4,14 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">  
-        <link href="{{ URL::asset('css/link.css')}}" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <link href="{{ URL::asset('css/link.css')}}" rel="stylesheet">
         <title>{{__('edit_link')}}</title>
+<style>
+body{max-width:700px;}
+</style>
     </head>
 
 <body>
@@ -23,7 +26,7 @@
             <v-row><v-text-field label="地址" name=url placeholder="请输入地址" outlined value="{{$link->url}}" ></v-text-field></v-row>
             <v-row><v-text-field label="标题" name=title placeholder="请输入标题" outlined value="{{$link->title}}" ></v-text-field></v-row>
             <v-row><v-text-field label="标签" name=tags placeholder="标签" outlined value="{{$link->tags}}" ></v-text-field></v-row>
-            <v-row justify="start" > <v-btn type=submit large outlined class="red white--text"> 修改 </v-btn> </v-row>
+            <v-row justify="center" > <v-btn type=submit small outlined class="">{{__('link.edit')}}</v-btn> </v-row>
         </form>
     </v-app>
 </div>

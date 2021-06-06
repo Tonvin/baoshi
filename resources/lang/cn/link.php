@@ -19,6 +19,8 @@ return [
     'add_link' => '添加书签',
     'link_list' => '书签列表',
     'edit_link' => '修改书签',
+    'add' => '添加',
+    'edit' => '修改',
     'tags_exploded_by_vertical_bar' => '标签，以 | 分割',
 
     /*

@@ -9,6 +9,9 @@
         <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
         <link href="{{ URL::asset('css/link.css')}}" rel="stylesheet">
+<style>
+body{max-width:700px;}
+</style>
     </head>
 <body class="">
 @include('link.header')
@@ -23,7 +26,7 @@
             <v-row><v-text-field label="地址" name=url placeholder="{{__('link.url')}}" outlined ></v-text-field></v-row>
             <v-row><v-text-field label="标题" name=title placeholder="{{__('link.title')}}" outlined ></v-text-field></v-row>
             <v-row><v-text-field label="标签" name=tags placeholder="{{__('link.tags_exploded_by_vertical_bar')}}" outlined ></v-text-field></v-row>
-            <v-row justify="center"><v-btn small type=submit class="">{{__('link.add_link')}}</v-btn> </v-row>
+            <v-row justify="center"><v-btn type=submit small outlined class="">{{__('link.add')}} </v-btn>  </v-row>
         </form>
     </v-app>
 </div>
