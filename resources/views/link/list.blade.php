@@ -3,10 +3,14 @@
 <head>
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">  
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <link href="{{ URL::asset('css/link.css')}}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+	<script src="{{ URL::asset('js/auth.js')}}"></script>
 	<title>{{__('link.link_list')}}</title>
 <style>
 .v-list-item__title{
@@ -50,7 +54,7 @@ color:#00474f;
 .v-list-item__title a.edit{
     opacity: 0;
     margin-left:auto;
-    font-size:.7rem;
+    font-size:.4rem;
 }
 
 .v-list-item__title a.del{
@@ -63,17 +67,11 @@ color:#00474f;
 
 @include('link.header')
 
-<div id="links">
-
 <div id="app">
-  <v-app id="inspire">
+<v-app id="inspire">
 
 
-    <v-card
-      class="mx-auto"
-      tile
-    >
-
+<v-card class="mx-auto" tile >
 
 <v-divider></v-divider>
 
@@ -112,9 +110,9 @@ href="{{url('link/add')}}"
 
   </v-app>
 </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+@include('link.footer')
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
 new Vue({
@@ -122,6 +120,9 @@ el: '#app',
     vuetify: new Vuetify(),
     data: () => ({
     links: [],
+    menu: [
+      { title: "{{__('link.login')}}"},
+    ],
   }),
 
   mounted () {
@@ -173,6 +174,21 @@ el: '#app',
     }
 })
 
+function logout() {
+    fetch('{{url('logout')}}',{
+        headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+			'X-CSRF-TOKEN': '{{csrf_token()}}',
+        },
+        method: "POST",
+    })
+        .then(function(response) {
+            if ( response.status == 200 && response.redirected === true) {
+                location.href = response.url;
+            }
+        })
+}
 </script>
 </body>
 </html>
