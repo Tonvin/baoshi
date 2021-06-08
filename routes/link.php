@@ -12,6 +12,10 @@ Route::get('/link/del/{id}', [App\Http\Controllers\LinkController::class, 'del']
 
 Route::get('/link/edit/{id}', [App\Http\Controllers\LinkController::class, 'edit'])->middleware(['auth'])->name('edit')->where('id', '[0-9]+');
 
-Route::post('/link/select', [App\Http\Controllers\LinkController::class, 'select'])->name('select');
+Route::post('/link/select/{name}', [App\Http\Controllers\LinkController::class, 'select'])->name('select');
 
 Route::post('/link/update', [App\Http\Controllers\LinkController::class, 'update'])->name('update');
+
+Route::get('/{name}/', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
+
+Route::get('/{name}/{bag}', [App\Http\Controllers\LinkController::class, 'list'])->name('list');

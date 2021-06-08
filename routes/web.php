@@ -13,13 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('link/list');
-});
-
 #Route::get('/dashboard', function () { return view('dashboard'); })->middleware(['auth'])->name('dashboard');
-Route::redirect('/dashboard', '/link/list');
-
+Route::get('/', [App\Http\Controllers\LinkController::class, 'main'])->middleware(['auth'])->name('index');
 
 require __DIR__.'/link.php';
 

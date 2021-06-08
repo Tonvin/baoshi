@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Link;
 use Illuminate\Support\Facades\DB;
+use App\Models\Link;
+use App\Models\User;
 
 
 class LinkController extends Controller
 {
     public function add(Request $request)
     {
-        return view('link/add');
+        return view('link/add', ['passport'=>$request->user()]);
     }
 
     public function edit(Request $request)
@@ -65,18 +66,26 @@ class LinkController extends Controller
         ]);
 
         $link = new Link();
+        $link->uid = $request->user()->id;
         $link->url = trim($request->url);
         $link->title = $request->title;
         $link->tags = self::format_tags($request->tags);
         $link->save();
         //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
-        return redirect()->route('list');
+        return redirect('/'.$request->user()->name.'/main');
     }
 
 
     public function select(Request $request)
     {
-        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')->get();
+        $name = $request->name ?? $request->user()->name;
+        if ( $name =  $request->name ) {
+            $user = User::where('name', $name)->first();
+            $uid = $user->id;
+        } else if ( $name = $request->user()->name ) {
+            $uid = $request->user()->id;
+        }
+        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')->where('uid', $uid)->get();
         foreach ($links ?? [] as &$link) {
             $link->tags = trim($link->tags, '|');
             $link->url  = rtrim($link->url, '/');
@@ -88,11 +97,17 @@ class LinkController extends Controller
     {
         $link = Link::find($request->id);
         $link->delete();
-        return redirect()->route('list');
+        return redirect('/'.$request->user()->name.'/main');
     }
 
     public function list(Request $request)
     {
-        return view('link/list');
+        return view('link/list', ['passport'=>$request->user()]);
+    }
+
+    public function main(Request $request)
+    {
+        $name = $request->name ?? $request->user()->name;
+        return view('link/list', ['name'=>$name, 'passport' => $request->user()]);
     }
 }

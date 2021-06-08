@@ -13,6 +13,10 @@
 	<script src="{{ URL::asset('js/auth.js')}}"></script>
 	<title>{{__('link.link_list')}}</title>
 <style>
+.v-card {
+    width:100%;
+    max-width:800px;
+}
 .v-list-item__title{
     display:flex;
 }
@@ -120,9 +124,6 @@ el: '#app',
     vuetify: new Vuetify(),
     data: () => ({
     links: [],
-    menu: [
-      { title: "{{__('link.login')}}"},
-    ],
   }),
 
   mounted () {
@@ -132,7 +133,7 @@ el: '#app',
   methods: {
   getDataFromApi () {
   let links = []
-      axios.post('{{url('link/select')}}').then
+      axios.post('{{url('link/select/'.$name)}}').then
       (
           response => {
           response.data.forEach(function(item) {
