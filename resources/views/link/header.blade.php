@@ -1,7 +1,6 @@
 <style>
 #header{
-	width:800px;
-margin:auto;
+    margin:auto;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -27,10 +26,17 @@ margin:auto;
     margin:.5em;
 }
 
+#header .nav button{
+	font-size:.8rem;
+    padding-left:20px;
+    line-height:30px;
+}
+
 #header .nav a{
 	font-size:.8rem;
     padding-left:20px;
     text-decoration:none;
+    line-height:30px;
 }
 </style>
 <header id=header>
@@ -39,7 +45,12 @@ margin:auto;
 		@if (Route::has('login'))
 			@auth
                 <a href="">{{$passport->name}}</a>
-				<a href="#" onclick="logout();" id=logout>{{__('auth.signout')}}</a>
+
+                <form action={{route('logout')}} method=post>
+                @csrf
+                    <button>{{__('auth.signout')}}</button>
+                </form>
+
 			@else
 				<a href="{{ route('login') }}" class="">{{__('auth.login')}}</a>
 				@if (Route::has('register'))

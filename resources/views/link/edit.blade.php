@@ -9,9 +9,6 @@
         <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
         <link href="{{ URL::asset('css/link.css')}}" rel="stylesheet">
         <title>{{__('edit_link')}}</title>
-<style>
-body{max-width:700px;}
-</style>
     </head>
 
 <body>

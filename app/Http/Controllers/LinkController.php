@@ -17,8 +17,12 @@ class LinkController extends Controller
 
     public function edit(Request $request)
     {
-        $link = Link::find($request->id);
-        return view('link/edit', ['link' => $link]);
+        $link = Link::where(['id' => $request->id, 'uid' => $request->user()->id])->first();
+        if ( null != $link ) {
+            return view('link/edit', ['link' => $link ,'passport'=>$request->user()]);
+        } else {
+            return redirect('/user/'.$request->user()->name.'/page/main');
+        }
     }
 
     public function update(Request $request)
@@ -28,14 +32,14 @@ class LinkController extends Controller
             'id' => 'required',
         ]);
 
-        $link = Link::find($request->id);
-        $link->url = trim($request->url);
-        $link->title = $request->title;
-        $link->tags = self::format_tags((string)$request->tags);
-        $link->save();
-        //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
-        return redirect('/link/list')->with('status', '修改成功');
-
+        Link::where('id', $request->id)
+            ->where('uid', $request->user()->id)
+            ->update([
+                'title' => trim($request->title),
+                'url'   => trim($request->url),
+                'tags'  => self::format_tags((string)$request->tags),
+            ]);
+        return redirect('/user/'.$request->user()->name.'/page/main');
     }
 
     /**
@@ -72,7 +76,7 @@ class LinkController extends Controller
         $link->tags = self::format_tags($request->tags);
         $link->save();
         //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
-        return redirect('/'.$request->user()->name.'/main');
+        return redirect('/user/'.$request->user()->name.'/page/main');
     }
 
 
@@ -93,21 +97,42 @@ class LinkController extends Controller
         return response()->json($links);
     }
 
+    /**
+     * Delete a link.
+     */
     public function del(Request $request)
     {
-        $link = Link::find($request->id);
-        $link->delete();
-        return redirect('/'.$request->user()->name.'/main');
+        $link = Link::where(['id' => $request->id, 'uid' => $request->user()->id])->first();
+        if ( null != $link ) {
+            $link->delete();
+        }
+        //while link deleted,redirect to page main.
+        return redirect('/user/'.$request->user()->name.'/page/main');
     }
 
     public function list(Request $request)
     {
-        return view('link/list', ['passport'=>$request->user()]);
+        if ( $name = $request->name ?? $request->user()->name ) {
+            if ( $page = $request->page ?? 'main' ) {
+                return redirect('/user/'.$name.'/page/'.$page);
+            }
+        }
+        //return view('link/list', ['passport'=>$request->user()]);
     }
 
-    public function main(Request $request)
+    public function page(Request $request)
     {
         $name = $request->name ?? $request->user()->name;
-        return view('link/list', ['name'=>$name, 'passport' => $request->user()]);
+        return view('link/list', ['name' => $name, 'passport'=>$request->user()]);
+    }
+
+    public function index(Request $request)
+    {
+        if ( $name = $request->name ?? $request->user()->name ) {
+            if ( $page = $request->page ?? 'main' ) {
+                return redirect('/user/'.$name.'/page/'.$page);
+            }
+        }
+        //return view('', ['name'=>$name, 'passport' => $request->user()]);
     }
 }

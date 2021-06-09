@@ -14,8 +14,8 @@ Route::get('/link/edit/{id}', [App\Http\Controllers\LinkController::class, 'edit
 
 Route::post('/link/select/{name}', [App\Http\Controllers\LinkController::class, 'select'])->name('select');
 
-Route::post('/link/update', [App\Http\Controllers\LinkController::class, 'update'])->name('update');
+Route::post('/link/update', [App\Http\Controllers\LinkController::class, 'update'])->middleware(['auth'])->name('update');
 
-Route::get('/{name}/', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
+Route::get('/user/{name}/', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
 
-Route::get('/{name}/{bag}', [App\Http\Controllers\LinkController::class, 'list'])->name('list');
+Route::get('/user/{name}/page/{page}', [App\Http\Controllers\LinkController::class, 'page'])->name('page');

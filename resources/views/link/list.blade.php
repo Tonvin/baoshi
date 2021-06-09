@@ -175,21 +175,6 @@ el: '#app',
     }
 })
 
-function logout() {
-    fetch('{{url('logout')}}',{
-        headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-			'X-CSRF-TOKEN': '{{csrf_token()}}',
-        },
-        method: "POST",
-    })
-        .then(function(response) {
-            if ( response.status == 200 && response.redirected === true) {
-                location.href = response.url;
-            }
-        })
-}
 </script>
 </body>
 </html>

@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 #Route::get('/dashboard', function () { return view('dashboard'); })->middleware(['auth'])->name('dashboard');
-Route::get('/', [App\Http\Controllers\LinkController::class, 'main'])->middleware(['auth'])->name('index');
+#Route::get('/', [App\Http\Controllers\LinkController::class, 'main'])->middleware(['auth'])->name('index');
+#Route::get('/dashboard', function () { return redirect('/home/dashboard'); });
+Route::get('/', [App\Http\Controllers\LinkController::class, 'index'])->middleware(['auth'])->name('index');
 
 require __DIR__.'/link.php';
 
