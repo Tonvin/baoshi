@@ -32,14 +32,19 @@ class LinkController extends Controller
             'id' => 'required',
         ]);
 
-        Link::where('id', $request->id)
-            ->where('uid', $request->user()->id)
-            ->update([
-                'title' => trim($request->title),
-                'url'   => trim($request->url),
-                'tags'  => self::format_tags((string)$request->tags),
-            ]);
-        return redirect('/user/'.$request->user()->name.'/page/main');
+        $tags = self::format_tags((string)$request->tags);
+        if ( false === $tags ) {
+            return back()->withInput()->withErrors(['tags' => __('link.too_many_tags')]);
+        } else {
+            Link::where('id', $request->id)
+                ->where('uid', $request->user()->id)
+                ->update([
+                    'title' => trim($request->title),
+                    'url'   => trim($request->url),
+                    'tags'  => $tags,
+                ]);
+            return redirect('/user/'.$request->user()->name.'/page/main');
+        }
     }
 
     /**
@@ -50,14 +55,17 @@ class LinkController extends Controller
      * eg. if tags like 'a||b  |  c|d|',after formatted,it should be like '|a|b|c|d|'.
      *
      * @param $tags string user post tags
-     * @return string or null
+     * @return string | boolean
      */
 
-    private function format_tags(string $tags) : string {
+    private function format_tags(string $tags) {
         if ( $tags ) {                  
             $_tags = explode('|', $tags);
             $_tags = array_map(function($tag){return trim($tag);}, $_tags);
             $_tags = array_filter($_tags);
+            if ( count($_tags) > 5 ) {
+                return false;
+            }
             return '|'.implode('|', $_tags).'|';                                                                                  
         }
         return '';
@@ -74,9 +82,12 @@ class LinkController extends Controller
         $link->url = trim($request->url);
         $link->title = $request->title;
         $link->tags = self::format_tags($request->tags);
-        $link->save();
-        //back()->withInput($request->only('email'))->withErrors(['email' => __($status)]);
-        return redirect('/user/'.$request->user()->name.'/page/main');
+        if ( false === $link->tags ) {
+            return back()->withInput()->withErrors(['tags' => __('link.too_many_tags')]);
+        } else {
+            $link->save();
+            return redirect('/user/'.$request->user()->name.'/page/main');
+        }
     }
 
 

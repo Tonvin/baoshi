@@ -22,7 +22,8 @@ return [
     'add' => '添加',
     'edit' => '修改',
     'login' => '登录',
-    'tags_exploded_by_vertical_bar' => '标签，以 | 分割',
+    'tags_exploded_by_vertical_bar' => '标签，以 | 分割，最多5个。',
+    'too_many_tags' => '标签最多5个',
 
     /*
     |--------------------------------------------------------------------------
