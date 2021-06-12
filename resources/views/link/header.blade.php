@@ -44,10 +44,9 @@
     <div class=nav>
 		@if (Route::has('login'))
 			@auth
-                <a href="">{{$passport->name}}</a>
-
                 <form action={{route('logout')}} method=post>
                 @csrf
+                    <a href="">{{$passport->name}}</a>
                     <button>{{__('auth.signout')}}</button>
                 </form>
 

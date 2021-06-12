@@ -20,9 +20,9 @@
         <form method=post action={{url('/link/update')}}>
             @csrf
             <p><input type=hidden name=id value='{{$link->id}}' /></p>
-            <v-row><v-text-field label="地址" name=url placeholder="请输入地址" outlined value="{{$link->url}}" ></v-text-field></v-row>
-            <v-row><v-text-field label="标题" name=title placeholder="请输入标题" outlined value="{{$link->title}}" ></v-text-field></v-row>
-            <v-row><v-text-field label="标签" name=tags placeholder="标签" outlined value="{{$link->tags}}" ></v-text-field></v-row>
+            <v-row><v-text-field label="地址" name=url placeholder="请输入地址" outlined value="{{old('url') ?? $link->url}}" ></v-text-field></v-row>
+            <v-row><v-text-field label="标题" name=title placeholder="请输入标题" outlined value="{{old('title') ?? $link->title}}" ></v-text-field></v-row>
+            <v-row><v-text-field label="标签" name=tags placeholder="标签" outlined value="{{old('tags')?? $link->tags}}" ></v-text-field></v-row>
             <v-row justify="center" > <v-btn type=submit small outlined class="">{{__('link.edit')}}</v-btn> </v-row>
         </form>
     </v-app>

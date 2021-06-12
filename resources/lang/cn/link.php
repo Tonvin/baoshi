@@ -23,7 +23,10 @@ return [
     'edit' => '修改',
     'login' => '登录',
     'tags_exploded_by_vertical_bar' => '标签，以 | 分割，最多5个。',
+    'single_tag_length_limit' => '单个标签限制长度最大10',
     'too_many_tags' => '标签最多5个',
+    'url_length_illegal' => '链接地址长度不合法，不能超过2048个字符',
+    'title_length_illegal' => '标题长度不合法，不能超过30个字符',
 
     /*
     |--------------------------------------------------------------------------

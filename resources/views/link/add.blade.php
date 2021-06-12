@@ -23,9 +23,9 @@ body{max-width:700px;}
         <form method=post action={{url('/link/insert')}}>
             @csrf
             <p><input type=hidden name=id value='' /></p>
-            <v-row><v-text-field label="地址" name=url placeholder="{{__('link.url')}}" outlined ></v-text-field></v-row>
-            <v-row><v-text-field label="标题" name=title placeholder="{{__('link.title')}}" outlined ></v-text-field></v-row>
-            <v-row><v-text-field label="标签" name=tags placeholder="{{__('link.tags_exploded_by_vertical_bar')}}" outlined ></v-text-field></v-row>
+            <v-row><v-text-field label="地址" name=url value="{{old('url')}}" placeholder="https://" outlined ></v-text-field></v-row>
+            <v-row><v-text-field label="标题" name=title value="{{old('title')}}" placeholder="{{__('link.title')}}" outlined ></v-text-field></v-row>
+            <v-row><v-text-field label="标签" name=tags value="{{old('tags')}}" placeholder="{{__('link.tags_exploded_by_vertical_bar')}}" outlined ></v-text-field></v-row>
             <v-row justify="center"><v-btn type=submit small outlined class="">{{__('link.add')}} </v-btn>  </v-row>
         </form>
     </v-app>

@@ -32,43 +32,62 @@ class LinkController extends Controller
             'id' => 'required',
         ]);
 
-        $tags = self::format_tags((string)$request->tags);
-        if ( false === $tags ) {
-            return back()->withInput()->withErrors(['tags' => __('link.too_many_tags')]);
-        } else {
+        $request->url = trim($request->url);
+        if ( strlen($request->url) > 20 ) {
+            return back()->withInput($request->all())->withErrors(['url' => __('link.url_length_illegal')]);
+        }
+
+        $request->title = trim($request->title);
+        if ( strlen($request->title) > 10 ) {
+            return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
+        }
+
+        $result = self::sanitize_tags((string)$request->tags);
+        if ( $result['flag'] == 1 ) {
             Link::where('id', $request->id)
-                ->where('uid', $request->user()->id)
-                ->update([
-                    'title' => trim($request->title),
-                    'url'   => trim($request->url),
-                    'tags'  => $tags,
-                ]);
+            ->where('uid', $request->user()->id)
+            ->update([
+                'title' => trim($request->title),
+                'url'   => trim($request->url),
+                'tags'  => $result['tags'],
+            ]);
             return redirect('/user/'.$request->user()->name.'/page/main');
+        } else {
+            return back()->withInput($request->all())->withErrors(['tags' => $result['detail']]);
         }
     }
 
     /**
-     * format tags
+     * sanitize tags
      * 
      * rules: explode tags by |,trim each tag.prepend | and append |
      *
-     * eg. if tags like 'a||b  |  c|d|',after formatted,it should be like '|a|b|c|d|'.
+     * eg. if tags like 'a||b  |  c|d|',after sanitized,it should be like '|a|b|c|d|'.
      *
      * @param $tags string user post tags
-     * @return string | boolean
+     * @return array
      */
 
-    private function format_tags(string $tags) {
-        if ( $tags ) {                  
-            $_tags = explode('|', $tags);
-            $_tags = array_map(function($tag){return trim($tag);}, $_tags);
-            $_tags = array_filter($_tags);
-            if ( count($_tags) > 5 ) {
-                return false;
+    private function sanitize_tags(string $tags) : array {
+        $back = array();
+        $_tags = explode('|', $tags);
+        foreach ( $_tags ?? [] as &$t ) {
+            $t = trim($t);
+            if ( strlen($t) > 24 ) {
+                $back['flag'] = 2;
+                $back['detail'] = __('link.single_tag_length_limit');
+                return  $back;
             }
-            return '|'.implode('|', $_tags).'|';                                                                                  
         }
-        return '';
+        $_tags = array_filter($_tags);
+        if ( count($_tags) > 5 ) {
+            $back['flag'] = 2;
+            $back['detail'] = __('link.too_many_tags');
+            return  $back;
+        }
+        $back['flag'] = 1;
+        $back['tags'] = '|'.implode('|', $_tags).'|';                                                                                  
+        return $back;
     }
 
     public function insert(Request $request)
@@ -80,13 +99,20 @@ class LinkController extends Controller
         $link = new Link();
         $link->uid = $request->user()->id;
         $link->url = trim($request->url);
+        if ( strlen($link->url) > 2048 ) {
+            return back()->withInput($request->all())->withErrors(['url' => __('link.url_length_illegal')]);
+        }
+        if ( strlen($request->title) > 24 ) {
+            return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
+        }
         $link->title = $request->title;
-        $link->tags = self::format_tags($request->tags);
-        if ( false === $link->tags ) {
-            return back()->withInput()->withErrors(['tags' => __('link.too_many_tags')]);
-        } else {
+        $result = self::sanitize_tags((string)$request->tags);
+        if ( $result['flag'] == 1 ) {
+            $link->tags = $result['tags'];
             $link->save();
             return redirect('/user/'.$request->user()->name.'/page/main');
+        } else {
+            return back()->withInput($request->all())->withErrors(['tags' => $result['detail']]);
         }
     }
 
