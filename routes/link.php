@@ -18,4 +18,10 @@ Route::post('/link/update', [App\Http\Controllers\LinkController::class, 'update
 
 Route::get('/user/{name}/', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
 
-Route::get('/user/{name}/page/{page}', [App\Http\Controllers\LinkController::class, 'page'])->name('page');
+Route::get('/user/{user}/page/{page}', [App\Http\Controllers\LinkController::class, 'page']);
+
+Route::post('/user/{user}/page/{page}', [App\Http\Controllers\LinkController::class, 'page']);
+
+Route::get('/user/{user}/page/{page}/tag/{tag}', [App\Http\Controllers\LinkController::class, 'tag']);
+
+Route::post('/user/{user}/page/{page}/tag/{tag}', [App\Http\Controllers\LinkController::class, 'tag']);

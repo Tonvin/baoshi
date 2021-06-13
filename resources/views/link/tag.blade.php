@@ -132,6 +132,7 @@ new Vue({
         {
             user:'{{$link->user}}',
             page:'{{$link->page}}',
+            tag:'{{$link->tag}}',
         }
   }),
 

@@ -33,12 +33,11 @@ class LinkController extends Controller
         ]);
 
         $request->url = trim($request->url);
-        if ( strlen($request->url) > 20 ) {
+        if ( mb_strlen($request->url) > 2048 ) {
             return back()->withInput($request->all())->withErrors(['url' => __('link.url_length_illegal')]);
         }
-
         $request->title = trim($request->title);
-        if ( strlen($request->title) > 10 ) {
+        if ( mb_strlen($request->title) > 30 ) {
             return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
         }
 
@@ -71,20 +70,29 @@ class LinkController extends Controller
     private function sanitize_tags(string $tags) : array {
         $back = array();
         $_tags = explode('|', $tags);
+
+        //检测长度
         foreach ( $_tags ?? [] as &$t ) {
             $t = trim($t);
-            if ( strlen($t) > 24 ) {
+            if ( mb_strlen($t) > 10 ) {
                 $back['flag'] = 2;
                 $back['detail'] = __('link.single_tag_length_limit');
                 return  $back;
             }
         }
+        //tag去空
         $_tags = array_filter($_tags);
+
+        //tag去重
+        $_tags = array_unique($_tags);
+
+        //检测tag数量
         if ( count($_tags) > 5 ) {
             $back['flag'] = 2;
             $back['detail'] = __('link.too_many_tags');
             return  $back;
         }
+
         $back['flag'] = 1;
         $back['tags'] = '|'.implode('|', $_tags).'|';                                                                                  
         return $back;
@@ -99,10 +107,10 @@ class LinkController extends Controller
         $link = new Link();
         $link->uid = $request->user()->id;
         $link->url = trim($request->url);
-        if ( strlen($link->url) > 2048 ) {
+        if ( mb_strlen($link->url) > 2048 ) {
             return back()->withInput($request->all())->withErrors(['url' => __('link.url_length_illegal')]);
         }
-        if ( strlen($request->title) > 24 ) {
+        if ( mb_strlen($request->title) > 30 ) {
             return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
         }
         $link->title = $request->title;
@@ -157,10 +165,77 @@ class LinkController extends Controller
         //return view('link/list', ['passport'=>$request->user()]);
     }
 
+    public function tag(Request $request)
+    {
+        $user = new \stdClass();
+        $user->name = $request->user()->name;
+        $user->id = $request->user()->id;
+
+        $link = new \stdClass();
+        $link->user = $request->user;
+        $link->page = $request->page;
+        $link->tag = $request->tag;
+        $link->url = "/user/{$link->user}/page/main/tag/{$link->tag}";
+
+        if ($request->isMethod('post')) {
+            $links = [];
+            if ( $name =  $request->user ) {
+                $user = User::where('name', $name)->first();
+                if ( $uid = $user->id ) {
+                    $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
+                                               ->where('uid', $uid)
+                                               ->where('tags', 'like', '%|'.$link->tag.'|%')->get();
+                    foreach ($links ?? [] as &$link) {
+                        $link->tags = trim($link->tags, '|');
+                        $link->url  = rtrim($link->url, '/');
+                    }
+                }
+            }
+            return response()->json($links);
+        } else {
+            return view('link/tag', ['link' => $link, 'user' => $user, 'passport'=>$request->user()]);
+        }
+    }
+
     public function page(Request $request)
     {
+        $user = new \stdClass();
+        $user->name = $request->user()->name;
+        $user->id = $request->user()->id;
+
+        $link = new \stdClass();
+        $link->user = $request->user;
+        $link->page = $request->page;
+        $link->url = "/user/$link->user/page/main/";
+
+        if ($request->isMethod('post')) {
+            $links = [];
+            if ( $name =  $request->user ) {
+                $user = User::where('name', $name)->first();
+                if ( $uid = $user->id ) {
+                    $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')->where('uid', $uid)->get();
+                    foreach ($links ?? [] as &$link) {
+                        $link->tags = trim($link->tags, '|');
+                        $link->url  = rtrim($link->url, '/');
+                    }
+                }
+            }
+            return response()->json($links);
+        } else {
+            return view('link/page', ['link' => $link, 'user' => $user, 'passport'=>$request->user()]);
+        }
+    }
+
+    public function ___tag(Request $request)
+    {
         $name = $request->name ?? $request->user()->name;
-        return view('link/list', ['name' => $name, 'passport'=>$request->user()]);
+
+        $link = new \StdClass();
+        $link->user = $request->name;
+        $link->page = $request->page;
+        $link->tag = $request->tag;
+
+        return view('link/list', ['link' => $link, 'name' => $name, 'passport'=>$request->user()]);
     }
 
     public function index(Request $request)
