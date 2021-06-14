@@ -50,7 +50,7 @@ class LinkController extends Controller
                 'url'   => trim($request->url),
                 'tags'  => $result['tags'],
             ]);
-            return redirect('/user/'.$request->user()->name.'/page/main');
+            return redirect('/'.$request->user()->name.'/main');
         } else {
             return back()->withInput($request->all())->withErrors(['tags' => $result['detail']]);
         }
@@ -118,7 +118,7 @@ class LinkController extends Controller
         if ( $result['flag'] == 1 ) {
             $link->tags = $result['tags'];
             $link->save();
-            return redirect('/user/'.$request->user()->name.'/page/main');
+            return redirect('/'.$request->user()->name.'/main');
         } else {
             return back()->withInput($request->all())->withErrors(['tags' => $result['detail']]);
         }
@@ -175,7 +175,7 @@ class LinkController extends Controller
         $link->user = $request->user;
         $link->page = $request->page;
         $link->tag = $request->tag;
-        $link->url = "/user/{$link->user}/page/main/tag/{$link->tag}";
+        $link->url = "/".$link->user."/".$link->page."/".$link->tag;
 
         if ($request->isMethod('post')) {
             $links = [];
@@ -206,14 +206,24 @@ class LinkController extends Controller
         $link = new \stdClass();
         $link->user = $request->user;
         $link->page = $request->page;
-        $link->url = "/user/$link->user/page/main/";
+        $link->url = "/".$link->user."/".$link->page;
+        if ( $link->tag = $request->tag ) {
+            $link->url .= "/".$link->tag;
+        }
 
         if ($request->isMethod('post')) {
             $links = [];
             if ( $name =  $request->user ) {
                 $user = User::where('name', $name)->first();
                 if ( $uid = $user->id ) {
-                    $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')->where('uid', $uid)->get();
+                    if ( $link->tag ) {
+                        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
+                                               ->where('uid', $uid)
+                                               ->where('tags', 'like', '%|'.$link->tag.'|%')->get();
+                    } else {
+                        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
+                                                   ->where('uid', $uid)->get();
+                    }
                     foreach ($links ?? [] as &$link) {
                         $link->tags = trim($link->tags, '|');
                         $link->url  = rtrim($link->url, '/');
@@ -240,9 +250,9 @@ class LinkController extends Controller
 
     public function index(Request $request)
     {
-        if ( $name = $request->name ?? $request->user()->name ) {
+        if ( $user = $request->user()->name ) {
             if ( $page = $request->page ?? 'main' ) {
-                return redirect('/user/'.$name.'/page/'.$page);
+                return redirect("/$user/$page");
             }
         }
         //return view('', ['name'=>$name, 'passport' => $request->user()]);

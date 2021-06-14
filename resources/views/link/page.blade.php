@@ -13,6 +13,13 @@
 	<script src="{{ URL::asset('js/auth.js')}}"></script>
 	<title>{{__('link.link_list')}}</title>
 <style>
+.crumbs{
+    margin-bottom:.5rem;
+}
+.crumbs a{
+    text-decoration:none;
+    margin:0 .2rem;
+}
 .v-card {
     width:100%;
     max-width:800px;
@@ -70,6 +77,10 @@ color:#00474f;
 <body>
 
 @include('link.header')
+
+<div class='crumbs'>
+    <a href='/{{$link->user}}' target=_self>{{$link->user}}</a>/<a href="{{$link->url}}" target=_self>{{$link->page}}</a>
+</div>
 
 <div id="app">
 <v-app id="inspire">
@@ -173,7 +184,7 @@ new Vue({
 
               }
               if ( item.tags ) {
-                  item.tags.split('|').forEach(el=> link += '<a class=tag href="/user/'+meta.user+'/page/main/tag/'+el+'" target=_self>'+el+'</a>');
+                  item.tags.split('|').forEach(el=> link += '<a class=tag href="/'+meta.user+'/main/'+el+'" target=_self>'+el+'</a>');
               }
               if ( user.name == meta.user ) {
                   link = link + '<a class=edit href="{{url('link/edit')}}/'+item.id+'" target=_self>修改</a>';

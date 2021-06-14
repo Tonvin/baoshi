@@ -8,8 +8,7 @@
 }
 
 #header h1{ 
-    margin:.1em;
-    letter-spacing:.1em;
+    margin-top:-30px;
 }
 
 #header h1 a { 
@@ -23,7 +22,7 @@
     display:flex;
     flex-direction:row;
     justify-content:flex-end;
-    margin:.5em;
+    margin:.1 .5em;
 }
 
 #header .nav button{
@@ -40,23 +39,22 @@
 }
 </style>
 <header id=header>
-    <h1 class=app_name><a href='{{env('APP_URL')}}' target=_self>{{env('APP_NAME')}}</a></h1>
     <div class=nav>
-		@if (Route::has('login'))
-			@auth
-                <form action={{route('logout')}} method=post>
-                @csrf
-                    <a href="">{{$passport->name}}</a>
-                    <button>{{__('auth.signout')}}</button>
-                </form>
+            @if (Route::has('login'))
+                @auth
+                    <form action={{route('logout')}} method=post>
+                    @csrf
+                        <a href="/">{{$passport->name}}</a>
+                        <button>{{__('auth.signout')}}</button>
+                    </form>
 
-			@else
-				<a href="{{ route('login') }}" class="">{{__('auth.login')}}</a>
-				@if (Route::has('register'))
-					<a href="{{ route('register') }}" class="">{{__('auth.register')}}</a>
-				@endif
-			@endauth
-		@endif
+                @else
+                    <a href="{{ route('login') }}" class="">{{__('auth.login')}}</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="">{{__('auth.register')}}</a>
+                    @endif
+                @endauth
+            @endif
 	</div>
-
+    <h1 class=app_name><a href='{{env('APP_URL')}}' target=_self>{{env('APP_NAME')}}</a></h1>
 </header>

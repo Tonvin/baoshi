@@ -174,7 +174,7 @@ new Vue({
 
               }
               if ( item.tags ) {
-                  item.tags.split('|').forEach(el=> link += '<a class=tag href="/user/'+meta.user+'/page/main/tag/'+el+'" target=_self>'+el+'</a>');
+                  item.tags.split('|').forEach(el=> link += '<a class=tag href="/'+meta.user+'/main/'+el+'" target=_self>'+el+'</a>');
               }
               if ( user.name == meta.user ) {
                   link = link + '<a class=edit href="{{url('link/edit')}}/'+item.id+'" target=_self>修改</a>';

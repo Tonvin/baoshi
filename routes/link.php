@@ -16,12 +16,12 @@ Route::post('/link/select/{name}', [App\Http\Controllers\LinkController::class, 
 
 Route::post('/link/update', [App\Http\Controllers\LinkController::class, 'update'])->middleware(['auth'])->name('update');
 
-Route::get('/user/{name}/', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
+Route::get('/{user}/', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
 
-Route::get('/user/{user}/page/{page}', [App\Http\Controllers\LinkController::class, 'page']);
+Route::get('/{user}/{page}', [App\Http\Controllers\LinkController::class, 'page']);
 
-Route::post('/user/{user}/page/{page}', [App\Http\Controllers\LinkController::class, 'page']);
+Route::post('/{user}/{page}', [App\Http\Controllers\LinkController::class, 'page']);
 
-Route::get('/user/{user}/page/{page}/tag/{tag}', [App\Http\Controllers\LinkController::class, 'tag']);
+Route::get('/{user}/{page}/{tag}', [App\Http\Controllers\LinkController::class, 'page']);
 
-Route::post('/user/{user}/page/{page}/tag/{tag}', [App\Http\Controllers\LinkController::class, 'tag']);
+Route::post('/{user}/{page}/{tag}', [App\Http\Controllers\LinkController::class, 'page']);
