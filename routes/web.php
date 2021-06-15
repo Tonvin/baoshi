@@ -18,6 +18,6 @@ use Illuminate\Support\Facades\Route;
 #Route::get('/dashboard', function () { return redirect('/home/dashboard'); });
 Route::get('/', [App\Http\Controllers\LinkController::class, 'index'])->middleware(['auth'])->name('index');
 
-require __DIR__.'/link.php';
-
 require __DIR__.'/auth.php';
+
+require __DIR__.'/link.php';

@@ -152,14 +152,14 @@ class LinkController extends Controller
             $link->delete();
         }
         //while link deleted,redirect to page main.
-        return redirect('/user/'.$request->user()->name.'/page/main');
+        return redirect('/'.$request->user()->name.'/main');
     }
 
     public function list(Request $request)
     {
         if ( $name = $request->name ?? $request->user()->name ) {
             if ( $page = $request->page ?? 'main' ) {
-                return redirect('/user/'.$name.'/page/'.$page);
+                return redirect('/'.$name.'/'.$page);
             }
         }
         //return view('link/list', ['passport'=>$request->user()]);
@@ -254,6 +254,9 @@ class LinkController extends Controller
             if ( $page = $request->page ?? 'main' ) {
                 return redirect("/$user/$page");
             }
+        } else {
+            echo 248;exit;
+                return redirect("/login");
         }
         //return view('', ['name'=>$name, 'passport' => $request->user()]);
     }
