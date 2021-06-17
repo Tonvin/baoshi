@@ -41,6 +41,9 @@ class LinkController extends Controller
             return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
         }
 
+        //access default is secret, value is 1.
+        $access = 2 == $request->access ? 2 : 1;
+
         $result = self::sanitize_tags((string)$request->tags);
         if ( $result['flag'] == 1 ) {
             Link::where('id', $request->id)
@@ -49,6 +52,7 @@ class LinkController extends Controller
                 'title' => trim($request->title),
                 'url'   => trim($request->url),
                 'tags'  => $result['tags'],
+                'access'  => $access,
             ]);
             return redirect('/'.$request->user()->name.'/main');
         } else {
@@ -110,10 +114,15 @@ class LinkController extends Controller
         if ( mb_strlen($link->url) > 2048 ) {
             return back()->withInput($request->all())->withErrors(['url' => __('link.url_length_illegal')]);
         }
+
+        $link->title = trim($request->title);
         if ( mb_strlen($request->title) > 30 ) {
             return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
         }
-        $link->title = $request->title;
+
+        //access default is secret, value is 1.
+        $link->access = 2 == $request->access ? 2 : 1;
+
         $result = self::sanitize_tags((string)$request->tags);
         if ( $result['flag'] == 1 ) {
             $link->tags = $result['tags'];
