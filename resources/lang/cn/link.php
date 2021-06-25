@@ -22,11 +22,16 @@ return [
     'add' => '添加',
     'edit' => '修改',
     'login' => '登录',
+    'setting' => '设置',
     'tags_exploded_by_vertical_bar' => '标签，以 | 分割，最多5个。',
     'single_tag_length_limit' => '单个标签限制长度最大10',
     'too_many_tags' => '标签最多5个',
     'url_length_illegal' => '链接地址长度不合法，不能超过2048个字符',
     'title_length_illegal' => '标题长度不合法，不能超过30个字符',
+
+    'page_name' => '页面名称',
+    'page_name_too_long' => '页面名称太长了',
+    'page_name_not_changed' => '页面名称未修改',
 
     /*
     |--------------------------------------------------------------------------

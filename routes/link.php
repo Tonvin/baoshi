@@ -16,6 +16,10 @@ Route::post('/link/select/{name}', [App\Http\Controllers\LinkController::class, 
 
 Route::post('/link/update', [App\Http\Controllers\LinkController::class, 'update'])->middleware(['auth'])->name('update');
 
+Route::get('/setting/page/{page}', [App\Http\Controllers\SettingController::class, 'edit'])->middleware(['auth'])->name('setting');
+
+Route::post('/setting/page/{page}', [App\Http\Controllers\SettingController::class, 'update'])->middleware(['auth'])->name('setting');
+
 Route::get('/{user}', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
 
 Route::get('/{user}/{page}', [App\Http\Controllers\LinkController::class, 'page']);
@@ -25,3 +29,4 @@ Route::post('/{user}/{page}', [App\Http\Controllers\LinkController::class, 'page
 Route::get('/{user}/{page}/{tag}', [App\Http\Controllers\LinkController::class, 'page']);
 
 Route::post('/{user}/{page}/{tag}', [App\Http\Controllers\LinkController::class, 'page']);
+

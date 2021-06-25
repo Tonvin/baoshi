@@ -14,11 +14,17 @@
 	<title>{{__('link.link_list')}}</title>
 <style>
 .crumbs{
+    display:flex;
     margin-bottom:.5rem;
+    justify-content: flex-start;
 }
 .crumbs a{
     text-decoration:none;
     margin:0 .2rem;
+}
+.crumbs a.setting{
+    margin-left:auto;
+    font-size:0.8rem;
 }
 .v-card {
     width:100%;
@@ -80,6 +86,7 @@ color:#00474f;
 
 <div class='crumbs'>
     <a href='/{{$link->user}}' target=_self>{{$link->user}}</a>/<a href="{{$link->url}}" target=_self>{{$link->page}}</a>
+    <a href='/setting/page/{{$link->page}}' target=_self class=setting>{{__("link.setting")}}</a>
 </div>
 
 <div id="app">
