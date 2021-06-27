@@ -86,7 +86,13 @@ color:#00474f;
 
 <div class='crumbs'>
     <a href='/{{$link->user}}' target=_self>{{$link->user}}</a>/<a href="{{$link->url}}" target=_self>{{$link->page}}</a>
-    <a href='/setting/page/{{$link->page}}' target=_self class=setting>{{__("link.setting")}}</a>
+
+@if (Route::has('login'))
+        @if ($link->user == $user->name)
+            <a href='/setting/page/{{$link->page}}' target=_self class=setting>{{__("link.setting")}}</a>
+        @endif
+@endif
+
 </div>
 
 <div id="app">
