@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="csrf-token" content="{{ csrf_token() }}">  
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-	<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-    <link href="{{ URL::asset('css/link.css')}}" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-	<script src="{{ URL::asset('js/auth.js')}}"></script>
-	<title>{{__('link.link_list')}}</title>
+@include('link.head')
+
 <style>
 .crumbs{
     display:flex;
@@ -79,44 +67,21 @@ color:#00474f;
     font-size:.6rem;
 }
 </style>
-</head>
-<body>
 
 @include('link.header')
 
-<div class='crumbs'>
-    <a href='/{{$link->user}}' target=_self>{{$link->user}}</a>/<a href="{{$link->url}}" target=_self>{{$link->page}}</a>
-
-@if (Route::has('login'))
-        @if ($link->user == $user->name)
-            <a href='/setting/page/{{$link->page}}' target=_self class=setting>{{__("link.setting")}}</a>
-        @endif
-@endif
-
-</div>
-
-<div id="app">
+<div id="page">
 <v-app id="inspire">
-
-
+<div class='crumbs'>
+    <a href='/{{$user}}' target=_self>{{$user}}</a>/<a href="/{{$user}}/{{$page}}" target=_self>{{$page}}</a>
+    @if (Route::has('login'))
+            @if ($user == $admin->name)
+                <a href='/setting/page/{{$page}}' target=_self class=setting>{{__("link.setting")}}</a>
+            @endif
+    @endif
+</div>
 <v-card class="mx-auto" tile >
-
 <v-divider></v-divider>
-
-<v-row justify=center>
-    <v-btn
-        dark
-        small
-href="{{url('link/add')}}"
-        color="indigo"
-        >
-        <v-icon dark>
-            mdi-plus
-        </v-icon>
-    </v-btn>
-</v-row>
-
-
       <v-list dense>
         <v-list-item-group
           color="primary"
@@ -134,28 +99,26 @@ href="{{url('link/add')}}"
         </v-list-item-group>
       </v-list>
     </v-card>
-
-
   </v-app>
 </div>
 
 @include('link.footer')
-
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
 new Vue({
-    el: '#app',
+    el: '#page',
     vuetify: new Vuetify(),
     data: () => ({
-    user:{
-        name:'{{$user->name}}',
-        id:{{$user->id}},
+    admin:{
+        name:'{{$admin->name}}',
+        id:{{$admin->id}},
     },
     links: [],
-    meta:
+    page:
         {
-            user:'{{$link->user}}',
-            page:'{{$link->page}}',
+            user:'{{$user}}',
+            page:'{{$page}}',
+            tag:'{{$tag}}',
         }
   }),
 
@@ -167,8 +130,8 @@ new Vue({
 
   getDataFromApi () {
   let urls = [];
-  const request = (user = this.user, meta=this.meta) => {
-      axios.post('{{$link->url}}',meta).then
+  const request = (admin = this.admin, page=this.page) => {
+      axios.post('{{$fetchUrl}}',page).then
       (
           response => {
           response.data.forEach(function(item) {
@@ -197,9 +160,9 @@ new Vue({
 
               }
               if ( item.tags ) {
-                  item.tags.split('|').forEach(el=> link += '<a class=tag href="/'+meta.user+'/main/'+el+'" target=_self>'+el+'</a>');
+                  item.tags.split('|').forEach(el=> link += '<a class=tag href="/'+page.user+'/'+page.page+'/'+el+'" target=_self>'+el+'</a>');
               }
-              if ( user.name == meta.user ) {
+              if ( admin.name == page.user ) {
                   link = link + '<a class=edit href="{{url('link/edit')}}/'+item.id+'" target=_self>修改</a>';
                   link = link + '<a class=del href="{{url('link/del')}}/'+item.id+'" target=_self>删除</a>';
               }

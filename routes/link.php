@@ -24,9 +24,9 @@ Route::get('/{user}', [App\Http\Controllers\UserController::class, 'index'])->na
 
 Route::get('/{user}/{page}', [App\Http\Controllers\LinkController::class, 'page']);
 
-Route::post('/{user}/{page}', [App\Http\Controllers\LinkController::class, 'page']);
+Route::post('/{user}/{page}/{tag?}', [App\Http\Controllers\LinkController::class, 'fetch']);
 
 Route::get('/{user}/{page}/{tag}', [App\Http\Controllers\LinkController::class, 'page']);
 
-Route::post('/{user}/{page}/{tag}', [App\Http\Controllers\LinkController::class, 'page']);
+//Route::post('/{user}/{page}/{tag}', [App\Http\Controllers\LinkController::class, 'page']);
 

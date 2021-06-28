@@ -1,10 +1,6 @@
 <style>
 #header{
     margin:auto;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-    align-items: center;
 }
 
 #header h1{ 
@@ -38,15 +34,34 @@
     line-height:30px;
 }
 </style>
+
 <header id=header>
     <div class=nav>
             @if (Route::has('login'))
                 @auth
-                    <form action={{route('logout')}} method=post>
-                    @csrf
-                        <a href="/">{{$passport->name}}</a>
-                        <button>{{__('auth.signout')}}</button>
-                    </form>
+                        <div>
+                                <v-btn
+                                    dark
+                                    small
+                            href="{{url('link/add')}}"
+                                    color="indigo"
+                                    >
+                                    <v-icon dark>
+                                        mdi-plus
+                                    </v-icon>
+                                </v-btn>
+                        </div>
+
+                        <div>
+                            <a href="/">{{$passport->name}}</a>
+                        </div>
+
+                        <div>
+                            <form action={{route('logout')}} method=post>
+                            @csrf
+                                <button>{{__('auth.signout')}}</button>
+                            </form>
+                        </div>
 
                 @else
                     <a href="{{ route('login') }}" class="">{{__('auth.login')}}</a>
@@ -58,3 +73,10 @@
 	</div>
     <h1 class=app_name><a href='{{env('APP_URL')}}' target=_self>{{env('APP_NAME')}}</a></h1>
 </header>
+
+<script>
+new Vue({
+    el: '#header',
+    vuetify: new Vuetify(),
+    })
+</script>

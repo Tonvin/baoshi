@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Link;
 use App\Models\User;
 
@@ -41,6 +42,11 @@ class LinkController extends Controller
             return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
         }
 
+        $request->page = trim($request->page);
+        if ( mb_strlen($request->page) > 30 ) {
+            return back()->withInput($request->all())->withErrors(['page' => __('link.page_length_illegal')]);
+        }
+
         //access default is secret, value is 1.
         $access = 2 == $request->access ? 2 : 1;
 
@@ -51,10 +57,11 @@ class LinkController extends Controller
             ->update([
                 'title' => trim($request->title),
                 'url'   => trim($request->url),
+                'page'   => trim($request->page),
                 'tags'  => $result['tags'],
                 'access'  => $access,
             ]);
-            return redirect('/'.$request->user()->name.'/main');
+            return redirect('/'.Auth::user()->name.'/'.$request->page);
         } else {
             return back()->withInput($request->all())->withErrors(['tags' => $result['detail']]);
         }
@@ -120,6 +127,11 @@ class LinkController extends Controller
             return back()->withInput($request->all())->withErrors(['title' => __('link.title_length_illegal')]);
         }
 
+        $link->page = trim($request->page);
+        if ( mb_strlen($request->page) > 20 ) {
+            return back()->withInput($request->all())->withErrors(['page' => __('link.page_length_illegal')]);
+        }
+
         //access default is secret, value is 1.
         $link->access = 2 == $request->access ? 2 : 1;
 
@@ -143,7 +155,9 @@ class LinkController extends Controller
         } else if ( $name = $request->user()->name ) {
             $uid = $request->user()->id;
         }
-        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')->where('uid', $uid)->get();
+        $page = $request->page ?? 'main';
+        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
+                                   ->where('uid', $uid)->where('page', $page)->get();
         foreach ($links ?? [] as &$link) {
             $link->tags = trim($link->tags, '|');
             $link->url  = rtrim($link->url, '/');
@@ -161,7 +175,7 @@ class LinkController extends Controller
             $link->delete();
         }
         //while link deleted,redirect to page main.
-        return redirect('/'.$request->user()->name.'/main');
+        return redirect('/'.Auth::user()->name.'/'.$link->page);
     }
 
     public function list(Request $request)
@@ -206,43 +220,48 @@ class LinkController extends Controller
         }
     }
 
-    public function page(Request $request)
+    public function fetch(Request $request)
     {
-        $user = new \stdClass();
-        $user->name = $request->user()->name;
-        $user->id = $request->user()->id;
-
-        $link = new \stdClass();
-        $link->user = $request->user;
-        $link->page = $request->page;
+        $user = $request->user;
+        $page = $request->page;
+        $tag = $request->tag;
+        /*
         $link->url = "/".$link->user."/".$link->page;
         if ( $link->tag = $request->tag ) {
             $link->url .= "/".$link->tag;
         }
-
-        if ($request->isMethod('post')) {
-            $links = [];
-            if ( $name =  $request->user ) {
-                $user = User::where('name', $name)->first();
-                if ( $uid = $user->id ) {
-                    if ( $link->tag ) {
-                        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
-                                               ->where('uid', $uid)
-                                               ->where('tags', 'like', '%|'.$link->tag.'|%')->get();
-                    } else {
-                        $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
-                                                   ->where('uid', $uid)->get();
-                    }
-                    foreach ($links ?? [] as &$link) {
-                        $link->tags = trim($link->tags, '|');
-                        $link->url  = rtrim($link->url, '/');
-                    }
-                }
-            }
-            return response()->json($links);
+         */
+        $links = [];
+        if ( $tag ) {
+            $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
+                                   ->where('user', $user)
+                                   ->where('page', $page)
+                                   ->where('tags', 'like', '%|'.$tag.'|%')
+                                   ->get();
         } else {
-            return view('link/page', ['link' => $link, 'user' => $user, 'passport'=>$request->user()]);
+            $links = DB::table('links')->select('id', 'title', 'url', 'tags', 'created_at')
+                                   ->where('user', $user)
+                                   ->where('page', $page)
+                                   ->get();
         }
+        foreach ($links ?? [] as &$link) {
+            $link->tags = trim($link->tags, '|');
+            $link->url  = rtrim($link->url, '/');
+        }
+        return response()->json($links);
+    }
+
+    public function page(Request $request)
+    {
+        $user = $request->user;
+        $page = $request->page;
+        $tag = $request->tag;
+
+        $fetchUrl = "/$user/$page/$tag";
+        return view('link/page', ['admin' => Auth::user(), 'fetchUrl' => $fetchUrl,
+            'user' => $user,'page' => $page, 'passport'=>$request->user(),
+            'tag' => $tag,
+        ]);
     }
 
     public function ___tag(Request $request)
