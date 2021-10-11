@@ -117,6 +117,7 @@ class LinkController extends Controller
 
         $link = new Link();
         $link->uid = $request->user()->id;
+        $link->user = $request->user()->name;
         $link->url = trim($request->url);
         if ( mb_strlen($link->url) > 2048 ) {
             return back()->withInput($request->all())->withErrors(['url' => __('link.url_length_illegal')]);
@@ -139,7 +140,7 @@ class LinkController extends Controller
         if ( $result['flag'] == 1 ) {
             $link->tags = $result['tags'];
             $link->save();
-            return redirect('/'.$request->user()->name.'/main');
+            return redirect('/'.$request->user()->name.'/'.$link->page);
         } else {
             return back()->withInput($request->all())->withErrors(['tags' => $result['detail']]);
         }
